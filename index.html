@@ -132,6 +132,7 @@
           alluser.appendChild(item);
         });
 
+        // 다른 유저 나갔을 때 유저 목록에서 지워주기
         socket.on('del_user_list', (user_id, user_nick) => {
           var del_item = document.getElementsByClassName(`user-name-${user_id}`);
           if (del_item)
