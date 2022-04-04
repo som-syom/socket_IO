@@ -1,34 +1,128 @@
 <!DOCTYPE html>
 <html lang="ko">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Som SocketIO Chatting</title>
     <style>
-      body { font-size: 10px; height: 100vh; position:fixed; margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-      header { position: fixed; display: block; color: white; background-color: mediumaquamarine; top: 0; left: 0; right: 0; height: 60px; text-align: center; font-size: 2rem; line-height: 2; z-index: 2;}
+      body {
+        font-size: 10px;
+        height: 100vh;
+        position: fixed;
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+      header {
+        display: block;
+        color: white;
+        background-color: mediumaquamarine;
+        height: 60px;
+        width: 100vw;
+        text-align: center;
+        font-size: 2rem;
+        line-height: 2;
+        z-index: 2;
+      }
 
-      .container { display: flex; position:relative; top: 60px; width: 100vw; height: 80%;}
-      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-      #input:focus { outline: none; }
-      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+      .container {
+        display: flex;
+        position: relative;
+        width: 100vw;
+        height: calc(100vh - 60px - 3rem);
+        /* padding-bottom: 3rem; */
+      }
+      #form {
+        background: rgba(0, 0, 0, 0.15);
+        padding: 0.25rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        height: 3rem;
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
+      }
+      #input {
+        border: none;
+        padding: 0 1rem;
+        flex-grow: 1;
+        border-radius: 2rem;
+        margin: 0.25rem;
+      }
+      #input:focus {
+        outline: none;
+      }
+      #form > button {
+        background: #333;
+        border: none;
+        padding: 0 1rem;
+        margin: 0.25rem;
+        border-radius: 3px;
+        outline: none;
+        color: #fff;
+      }
 
-      .chat-area { width: 72.5vw; position: relative; border: 1px solid mediumaquamarine; border-radius: 10px; margin: 2.5vw; box-sizing: border-box; overflow:scroll;}
-      .users { position: fixed; top: 60px; right: 0; width: 20vw; height: 50%; border: 1px solid mediumaquamarine; border-radius: 10px; margin: 2.5vw 2.5vw 2.5vw 0; box-sizing: border-box; overflow: scroll;}
-      .users-title { text-align: center; font-size: 1.2rem; line-height: 2; color: mediumaquamarine; font-weight: 900;}
-      #users_list { list-style-type: none; font-size: 1rem; background-color: white; margin:10px; padding: 0; text-align: center;}
-      #users_list > li { display: block; cursor: pointer; }
-      #messages { list-style-type: none; margin: 0; padding: 0;}
-      #messages > li { padding: 0.5rem 1rem; font-size: 1rem;}
-      #messages > li:nth-child(odd) { background: #efefef; }
-      .notification-msg { color: royalblue; }
+      .chat-area {
+        width: 100vw;
+        position: relative;
+        display: flex;
+        margin: 10px;
+        box-sizing: border-box;
+        overflow-y: scroll;
+      }
+      .users {
+        width: 20vw;
+        height: 50%;
+        border: 1px solid mediumaquamarine;
+        border-radius: 10px;
+        margin: 10px;
+        box-sizing: border-box;
+        overflow: scroll;
+      }
+      .users-title {
+        text-align: center;
+        font-size: 1.2rem;
+        line-height: 2;
+        color: mediumaquamarine;
+        font-weight: 900;
+      }
+      #users_list {
+        list-style-type: none;
+        font-size: 1rem;
+        background-color: white;
+        margin: 10px;
+        padding: 0;
+        text-align: center;
+      }
+      #users_list > li {
+        display: block;
+        cursor: pointer;
+      }
+      #messages {
+        width: 70vw;
+        border: 1px solid mediumaquamarine;
+        border-radius: 10px;
+        list-style-type: none;
+        margin: 10px;
+        padding: 0;
+      }
+      #messages > li {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+      }
+      #messages > li:nth-child(odd) {
+        background: #efefef;
+      }
+      .notification-msg {
+        color: royalblue;
+      }
     </style>
   </head>
   <body>
-    <header class="header">
-      SOMSOM CHATTING ROOM
-    </header>
+    <header class="header">SOMSOM CHATTING ROOM</header>
     <div class="container">
       <section class="chat-area">
         <ul id="messages"></ul>
@@ -37,114 +131,113 @@
           <ul id="users_list"></ul>
         </section>
       </section>
-        <form id="form" action="">
-          <input id="input" autocomplete="off" oninput="writing()" /><button>Send</button>
-        </form>
-  </div>
+      <form id="form" action="">
+        <input id="input" autocomplete="off" oninput="writing()" /><button>
+          Send
+        </button>
+      </form>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        // 닉네임 설정
-        var nickname = null;
-        while (!nickname) {
-          nickname = prompt("닉네임을 입력해주세요");
+      var messages = document.getElementById("messages");
+      var form = document.getElementById("form");
+      var input = document.getElementById("input");
+      var alluser = document.getElementById("users_list");
+      var scrollEl = document.querySelector(".chat-area");
+
+      // 닉네임 설정
+      var nickname = null;
+      while (!nickname) {
+        nickname = prompt("닉네임을 입력해주세요");
+      }
+      var socket = io();
+
+      // 다른 클라이언트 입장시 입장 메세지 출력
+      socket.emit("welcome-msg", nickname);
+      socket.on("welcome-msg", function (nick) {
+        var item = document.createElement("li");
+        item.className = "notification-msg";
+        item.textContent = nick + "님이 입장하셨습니다";
+        messages.appendChild(item);
+        scrollEl.scrollTo(0, scrollEl.scrollHeight);
+      });
+
+      // 메세지 입력중일 때 체크
+      var input_flag = false;
+      function writing() {
+        if (input.value && input_flag === false) {
+          input_flag = true;
+          socket.emit("writing-msg", nickname);
+        } else if (!input.value) {
+          input_flag = false;
+          socket.emit("writing-msg-del", nickname);
         }
-        var socket = io();
+      }
 
-        // 다른 클라이언트 입장시 입장 메세지 출력
-        socket.emit('welcome-msg', nickname);
-        socket.on('welcome-msg', function(nick) {
-            var item = document.createElement('li');
-            item.className = 'notification-msg';
-            item.textContent = nick + "님이 입장하셨습니다";
-            messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
-        });
+      // 메세지 입력중 표시
+      socket.on("writing-msg", (nick) => {
+        var item = document.createElement("li");
+        item.className = `writing-msg-${nick}`;
+        item.textContent = nick + "님이 입력중 ...";
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
 
-        var messages = document.getElementById('messages');
-        var form = document.getElementById('form');
-        var input = document.getElementById('input');
-        var alluser = document.getElementById('users_list');
+      // 메세지 입력중 삭제
+      socket.on("writing-msg-del", (nick) => {
+        var del_item = document.getElementsByClassName(`writing-msg-${nick}`);
+        if (del_item) messages.removeChild(del_item[0]);
+      });
 
-        // 메세지 입력중일 때 체크
-        var input_flag = false;
-        function writing() {
-          if (input.value && input_flag === false) {
-            input_flag = true;
-            socket.emit('writing-msg', nickname);
-          } else if (!input.value) {
-            input_flag = false;
-            socket.emit('writing-msg-del', nickname);
-          }
-        };
+      // 메세지 전송하기 하여 서버로 전송
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (input.value) {
+          input_flag = false;
+          socket.emit("writing-msg-del", nickname);
+          let tmp = input.value;
+          socket.emit("chat message", nickname, tmp);
+          input.value = "";
+        }
+      });
 
-        // 메세지 입력중 표시
-        socket.on('writing-msg', (nick) => {
-          var item = document.createElement('li');
-          item.className = `writing-msg-${nick}`;
-          item.textContent = nick + "님이 입력중 ...";
-          messages.appendChild(item);
-          window.scrollTo(0, document.body.scrollHeight);
-        });
+      // 메세지 서버에서 받아와 클라이언트 화면에 띄우기
+      socket.on("chat message", function (nick, msg) {
+        var item = document.createElement("li");
+        item.textContent = nick + " : " + msg;
+        messages.appendChild(item);
+        scrollEl.scrollTo(0, scrollEl.scrollHeight);
+      });
 
-        // 메세지 입력중 삭제
-        socket.on('writing-msg-del', (nick) => {
-          var del_item = document.getElementsByClassName(`writing-msg-${nick}`);
-          if (del_item)
-            messages.removeChild(del_item[0]);
-        })
-
-        // 메세지 전송하기 하여 서버로 전송
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (input.value) {
-                input_flag = false;
-                socket.emit('writing-msg-del', nickname);
-                let tmp = input.value;
-                socket.emit('chat message', nickname, tmp);
-                input.value = '';
-            }
-        });
-
-        // 메세지 서버에서 받아와 클라이언트 화면에 띄우기
-        socket.on('chat message', function(nick, msg) {
-            var item = document.createElement('li');
-            item.textContent = nick + " : " + msg;
-            messages.appendChild(item);
-            var scrollEl = document.querySelector('.chat-area');
-            scrollEl.scrollTo(0, scrollEl.scrollHeight);
-        });
-
-        // 최초 접속시 기존 유저 목록 띄우기
-        socket.once('user_list', (user_list) => {
-          user_list.forEach((el) => {
-            var item = document.createElement('li');
-            item.textContent = el.nickname;
-            item.className = `user-name-${el.id}`;
-            alluser.appendChild(item);
-          })
-        });
-        
-        // 새 유저 들어왔을 때 업데이트
-        socket.on('update_user_list', (new_user) => {
-          var item = document.createElement('li');
-          item.textContent = new_user.nickname;
-          item.className = `user-name-${new_user.id}`;
+      // 최초 접속시 기존 유저 목록 띄우기
+      socket.once("user_list", (user_list) => {
+        user_list.forEach((el) => {
+          var item = document.createElement("li");
+          item.textContent = el.nickname;
+          item.className = `user-name-${el.id}`;
           alluser.appendChild(item);
         });
+      });
 
-        // 다른 유저 나갔을 때 유저 목록에서 지워주기
-        socket.on('del_user_list', (user_id, user_nick) => {
-          var del_item = document.getElementsByClassName(`user-name-${user_id}`);
-          if (del_item)
-            alluser.removeChild(del_item[0]);
-          var item = document.createElement('li');
-          item.className = 'notification-msg';
-          item.textContent = user_nick + "님이 퇴장하셨습니다";
-          messages.appendChild(item);
-          window.scrollTo(0, document.body.scrollHeight);
-        });
+      // 새 유저 들어왔을 때 업데이트
+      socket.on("update_user_list", (new_user) => {
+        var item = document.createElement("li");
+        item.textContent = new_user.nickname;
+        item.className = `user-name-${new_user.id}`;
+        alluser.appendChild(item);
+      });
 
-        
+      // 다른 유저 나갔을 때 유저 목록에서 지워주기 + 퇴장 메세지
+      socket.on("del_user_list", (user_id, user_nick) => {
+        var del_item = document.getElementsByClassName(`user-name-${user_id}`);
+        if (del_item) alluser.removeChild(del_item[0]);
+        var item = document.createElement("li");
+        item.className = "notification-msg";
+        item.textContent = user_nick + "님이 퇴장하셨습니다";
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+        scrollEl.scrollTo(0, scrollEl.scrollHeight);
+      });
     </script>
   </body>
 </html>
